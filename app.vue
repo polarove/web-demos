@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<NuxtRouteAnnouncer />
-		<NuxtWelcome />
+		<el-button>asd</el-button>
 	</div>
 </template>
