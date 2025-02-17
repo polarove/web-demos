@@ -12,11 +12,16 @@
 
 <script setup lang="ts">
 import { sheetStore } from '~/store'
-import type { ISheet } from '~/types/sheet'
+import type { IGroup, IMember } from '~/types/member'
 
-const handleSuccess = (response: ISheet[]) => {
+const handleSuccess = (response: IMember[][]) => {
 	const useSheetStore = sheetStore()
-	useSheetStore.sheet = response
+	const groups: IGroup[] = response.map((member, index) => ({
+		submitted: false, // 或者根据业务逻辑设置为 true
+		hasProblem: index % 2 === 0,
+		members: member
+	}))
+	useSheetStore.groups = groups
 	navigateTo('/verify')
 }
 </script>

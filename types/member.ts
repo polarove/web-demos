@@ -7,5 +7,12 @@ export interface IMember {
 	birthday?: string | null
 	age?: string | null
 	contact?: string | null
+	orderDate?: string | null
 	remark?: string | null
+}
+
+export interface IGroup {
+	submitted: boolean
+	hasProblem: boolean
+	members: IMember[]
 }

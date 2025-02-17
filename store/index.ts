@@ -1,6 +1,6 @@
-import type { ISheet } from '~/types/sheet'
+import type { IGroup } from '~/types/member'
 
 export const sheetStore = defineStore('sheet', () => {
-	const sheet = ref<ISheet[]>([])
-	return { sheet }
+	const groups = ref<IGroup[]>([])
+	return { groups }
 })
