@@ -11,9 +11,12 @@
 </template>
 
 <script setup lang="ts">
+import { sheetStore } from '~/store'
 import type { ISheet } from '~/types/sheet'
 
-const handleSuccess = (response: ISheet) => {
-	console.log(response)
+const handleSuccess = (response: ISheet[]) => {
+	const useSheetStore = sheetStore()
+	useSheetStore.sheet = response
+	navigateTo('/verify')
 }
 </script>

@@ -1,6 +1,6 @@
-import type { IGroup } from './group'
+import type { IMember } from './member'
 
 export interface ISheet {
 	date?: string
-	groups: IGroup[]
+	members: IMember[][]
 }
