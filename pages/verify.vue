@@ -232,26 +232,17 @@
 						v-for="(member, i) in currentGroup.members"
 						:key="i"
 						shadow="hover"
-						class="shrink-0 min-w-[367px] max-w-[400px] m-4 cursor-pointer"
-						@click="handleReviseCustomer(member, i)"
+						class="shrink-0 min-w-[367px] max-w-[400px] m-4 cursor-pointer hover:b-[--el-color-primary]"
 					>
 						<template #header>
 							<div class="flex justify-between items-center">
 								<div>
 									<span
 										v-if="member.appended"
-										class="i-mdi:star mx-2"
+										class="i-mdi:star mx-2 color-[--el-color-warning]"
 									/>
 									<span>{{ member.name }}</span>
 								</div>
-								<el-popconfirm
-									title="确认删除?"
-									@confirm="handleDeleteMember(i)"
-								>
-									<template #reference>
-										<span class="i-mdi:close cursor-pointer hover:color-[--el-color-primary]" />
-									</template>
-								</el-popconfirm>
 							</div>
 						</template>
 						<div class="flex justify-between py-2">
@@ -286,13 +277,29 @@
 							<span>下单日期</span>
 							{{ member.orderDate }}
 						</div>
-						<template #footer>
-							<div
-								class="text-ellipsis overflow-hidden text-nowrap cursor-pointer"
-								@click="toggleRemarkDetail(member.name, member.remark)"
-							>
-								{{ member.remark }}
+						<div
+							class="flex justify-between py-2"
+							@click="toggleRemarkDetail(member.name, member.remark)"
+						>
+							<span>客户备注</span>
+							<div class="max-w-120px text-ellipsis overflow-hidden text-nowrap cursor-pointer">
+								{{ member.remark ?? '客户未提供备注信息' }}
 							</div>
+						</div>
+						<template #footer>
+							<el-button @click="handleReviseCustomer(member, i)">
+								编辑
+							</el-button>
+							<el-popconfirm
+								title="确认删除?"
+								@confirm.prevent="handleDeleteMember(i)"
+							>
+								<template #reference>
+									<el-button>
+										删除
+									</el-button>
+								</template>
+							</el-popconfirm>
 						</template>
 					</el-card>
 				</transition-group>
