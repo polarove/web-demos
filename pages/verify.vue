@@ -582,13 +582,12 @@ onMounted(() => {
 			setTimeout(() => {
 				state.tooltip.visible = false
 			}, 3000)
+		}).catch(() => {
+			state.tooltip.visible = true
+			setTimeout(() => {
+				state.tooltip.visible = false
+			}, 3000)
 		})
-			.catch(() => {
-				state.tooltip.visible = true
-				setTimeout(() => {
-					state.tooltip.visible = false
-				}, 3000)
-			})
 	}
 })
 </script>
