@@ -361,6 +361,7 @@
 				:key="e"
 				style="--un-scale-x:1.05; --un-scale-y:1.05"
 				class="[&:nth-child(n-1)]:mt4 cursor-pointer hover:transform"
+				:style="state.index === e ? 'border-color: var(--el-color-primary)' : ''"
 				@click="handleMemberCardClick(e)"
 			>
 				<div class="flex items-center">
