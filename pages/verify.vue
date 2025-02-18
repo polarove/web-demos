@@ -25,7 +25,7 @@
 				class="position-absolute right-4 top-4 cursor-pointer hover:color-[--el-color-primary] text-2xl"
 				@click="toggleDrawer"
 			>
-				{{ state.index + 1 }} / {{ useSheetStore.groups.length + 1 }}
+				{{ state.index + 1 }} / {{ useSheetStore.groups.length }}
 			</div>
 		</el-tooltip>
 
