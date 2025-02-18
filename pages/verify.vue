@@ -87,6 +87,7 @@
 					v-model="form.numberOfGuests"
 					:min="1"
 					:step="1"
+					:disabled="true"
 				/>
 			</el-form-item>
 		</el-form>
@@ -453,6 +454,7 @@ const state = reactive({
 
 const ref1 = ref()
 
+const currentGroup = computed(() => useSheetStore.groups[state.index])
 const form = reactive({
 	service: {
 		region: '1',
@@ -462,7 +464,7 @@ const form = reactive({
 		type: '1'
 	},
 	travelDays: 1,
-	numberOfGuests: 1,
+	numberOfGuests: currentGroup.value.members.length,
 	go: {
 		airport: '1',
 		flight: '',
@@ -483,9 +485,6 @@ const form = reactive({
 		confirm: ''
 	}
 })
-
-const currentGroup = computed(() => useSheetStore.groups[state.index])
-
 const toggleRemarkDetail = (name?: string | null, remark?: string | null) => {
 	ElMessageBox.alert(remark ?? '客户未提供备注信息', name ?? '客户备注', {
 		confirmButtonText: 'OK'
