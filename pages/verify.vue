@@ -214,22 +214,26 @@
 		<h1 class="text-center mt-24">
 			客户信息
 		</h1>
-		<div class="flex justify-center items-center">
-			<el-button
-				size="large"
-				@click="state.addCustomer.visible = true"
-			>
-				添加客户
-			</el-button>
-		</div>
 		<el-scrollbar>
 			<div class="flex">
 				<transition-group name="slide-fade">
 					<el-card
+						class="shrink-0 min-w-[367px] max-w-[400px] m-4 cursor-pointer [&>div]:hover:text-[--el-color-primary]"
+						@click="state.addCustomer.visible = true"
+					>
+						<div class="flex justify-center flex-col mt-32 items-center">
+							<div class="i-mdi:plus text-5xl" />
+							<div>
+								添加新客户
+							</div>
+						</div>
+					</el-card>
+					<el-card
 						v-for="(member, i) in currentGroup.members"
 						:key="i"
 						shadow="hover"
-						class="shrink-0 min-w-[367px] max-w-[400px] m-4"
+						class="shrink-0 min-w-[367px] max-w-[400px] m-4 cursor-pointer"
+						@click="handleReviseCustomer(member, i)"
 					>
 						<template #header>
 							<div class="flex justify-between items-center">
@@ -393,11 +397,28 @@
 				</el-button>
 			</template>
 		</el-dialog>
+		<el-dialog v-model="state.reviseCustomer.visible">
+			<template #header>
+				修改客户信息
+			</template>
+			<el-form label-position="top">
+				<el-form-item label="客户姓名">
+					<el-input v-model="state.reviseCustomer.member.name" />
+				</el-form-item>
+			</el-form>
+			... 等其他可修改项目
+			<template #footer>
+				<el-button @click="confirmReviseCustomer">
+					确认修改
+				</el-button>
+			</template>
+		</el-dialog>
 	</div>
 </template>
 
 <script lang='ts' setup>
 import { sheetStore } from '~/store'
+import type { IMember } from '~/types/member'
 
 const useSheetStore = sheetStore()
 
@@ -407,6 +428,13 @@ const state = reactive({
 	},
 	orderList: {
 		visible: false
+	},
+	reviseCustomer: {
+		visible: false,
+		member: {
+			index: 0,
+			name: ''
+		}
 	},
 	index: 0,
 	tooltip: {
@@ -525,6 +553,17 @@ const handleAddCustomer = () => {
 	}
 	useSheetStore.groups[state.index].members.unshift(customer)
 	state.addCustomer.visible = false
+}
+
+const handleReviseCustomer = (member: IMember, index: number) => {
+	state.reviseCustomer.visible = true
+	state.reviseCustomer.member.name = member.name ?? '未知客户'
+	state.reviseCustomer.member.index = index
+}
+
+const confirmReviseCustomer = () => {
+	state.reviseCustomer.visible = false
+	currentGroup.value.members[state.reviseCustomer.member.index].name = state.reviseCustomer.member.name
 }
 
 onMounted(() => {
