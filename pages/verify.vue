@@ -573,7 +573,9 @@ onMounted(() => {
 	else {
 		const totoal = useSheetStore.groups.length
 		const errors = useSheetStore.groups.filter(group => group.hasProblem).length
-		ElMessageBox.alert(`系统已为您生成${totoal + 1}个待处理订单，其中信息异常的订单有${errors}个`, '提示', {
+		ElMessageBox.alert(h('div', [
+			'系统已为您生成 ', h('span', { style: 'color: #67C23A' }, totoal), ' 份订单，其中 ', h('span', { style: 'color: #F56C6C' }, errors), ' 份订单的信息有错误，请及时处理。'
+		]), '提示', {
 			confirmButtonText: 'OK'
 		}).then(() => {
 			state.tooltip.visible = true
