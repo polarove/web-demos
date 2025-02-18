@@ -16,11 +16,13 @@ import type { IGroup, IMember } from '~/types/member'
 
 const handleSuccess = (response: IMember[][]) => {
 	const useSheetStore = sheetStore()
-	const groups: IGroup[] = response.map((member, index) => ({
+	const groups: IGroup[] = response.map((members, index) => ({
 		submitted: false, // 或者根据业务逻辑设置为 true
 		hasProblem: index % 2 === 0,
-		members: member
+		members
 	}))
+	console.log(groups)
+
 	useSheetStore.groups = groups
 	navigateTo('/verify')
 }

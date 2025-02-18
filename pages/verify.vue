@@ -1,306 +1,345 @@
 <template>
-	<div>
+	<div class="p12 position-relative">
 		<div class="position-fixed bottom-0 w-100% h-67px bg-[--el-bg-color-overlay] flex justify-center items-center z-[999]">
 			<el-button
 				size="large"
 				:disabled="currentGroup.submitted || currentGroup.hasProblem"
 				@click="handleConfirm"
 			>
-				<div>
-					{{ currentGroup.hasProblem ? '当前订单存在问题，请检查信息' : currentGroup.submitted ? '订单已提交' : '确认提交' }}
-				</div>
+				{{ currentGroup.hasProblem ? '当前订单存在问题，请检查信息' : currentGroup.submitted ? '订单已提交' : '确认提交' }}
+			</el-button>
+			<el-button
+				size="large"
+			>
+				暂时保存
 			</el-button>
 		</div>
 
-		<el-text
-			class="position-absolute right-4 top-4 cursor-pointer hover:color-[--el-color-primary]"
-			size="large"
-			@click="toggleDrawer"
+		<el-tooltip
+			content="点击此处查看订单列表"
+			effect="dark"
+			:visible="state.tooltip.visible"
 		>
-			{{ state.index + 1 }} / {{ useSheetStore.groups.length + 1 }}
-		</el-text>
+			<div
+				ref="ref1"
+				class="position-absolute right-4 top-4 cursor-pointer hover:color-[--el-color-primary] text-2xl"
+				@click="toggleDrawer"
+			>
+				{{ state.index + 1 }} / {{ useSheetStore.groups.length + 1 }}
+			</div>
+		</el-tooltip>
 
-		<div class="pt-4">
-			<h2 class="text-center">
-				服务信息
-			</h2>
-			<div class="flex">
-				<el-form inline>
-					<el-form-item>
-						<el-select
-							v-model="form.service.region"
-							style="width: 200px;"
-						>
-							<el-option
-								label="国内导服"
-								value="1"
-							/>
-							<el-option
-								label="国外导服"
-								value="2"
-							/>
-							<el-option
-								label="跨国导服"
-								value="3"
-							/>
-						</el-select>
-					</el-form-item>
-					<el-form-item>
-						<el-select
-							v-model="form.service.type"
-							style="width: 200px;"
-							class="ml-4"
-						>
-							<el-option
-								label="送团接团"
-								value="1"
-							/>
-							<el-option
-								label="送团"
-								value="2"
-							/>
-							<el-option
-								label="接团"
-								value="3"
-							/>
-						</el-select>
-					</el-form-item>
-					<el-form-item>
-						<el-input-number
-							v-model="form.travelDays"
-							:min="1"
-							:step="1"
-						/>
-					</el-form-item>
-					<el-form-item>
-						<el-input-number
-							v-model="form.numberOfGuests"
-							:min="1"
-							:step="1"
-						/>
-					</el-form-item>
-				</el-form>
-			</div>
-			<div v-if="form.service.type == '1' || form.service.type == '2'">
-				<div>
-					去程信息
-				</div>
-				<el-form inline>
-					<el-form-item>
-						<el-select
-							v-model="form.go.airport"
-						>
-							<el-option
-								label="[福州]福州长乐国际机场"
-								value="1"
-							/>
-							<el-option
-								label="[福州]福州机场"
-								value="2"
-							/>
-						</el-select>
-					</el-form-item>
-					<el-form-item>
-						<el-input
-							v-model="form.go.flight"
-							placeholder="航班/车次"
-						/>
-					</el-form-item>
-					<el-form-item>
-						<el-date-picker
-							v-model="form.go.date"
-							type="date"
-							placeholder="出发日期"
-						/>
-					</el-form-item>
-					<el-form-item>
-						<el-time-picker
-							v-model="form.go.time"
-							placeholder="出发时间"
-						/>
-					</el-form-item>
-					<el-form-item>
-						<el-select v-model="form.go.operator">
-							<el-option
-								label="福州小丁[0]"
-								value="1"
-							/>
-							<el-option
-								label="福州小丁[1]"
-								value="2"
-							/>
-							<el-option
-								label="福州小丁[2]"
-								value="3"
-							/>
-						</el-select>
-					</el-form-item>
-				</el-form>
-			</div>
-			<div v-if="form.service.type == '1' || form.service.type == '3'">
-				<div>
-					回程信息
-				</div>
-				<el-form :inline="true">
-					<el-form-item>
-						<el-select
-							v-model="form.back.airport"
-						>
-							<el-option
-								label="[福州]福州长乐国际机场"
-								value="1"
-							/>
-							<el-option
-								label="[福州]福州机场"
-								value="2"
-							/>
-						</el-select>
-					</el-form-item>
-					<el-form-item>
-						<el-input
-							v-model="form.back.flight"
-							placeholder="航班/车次"
-						/>
-					</el-form-item>
-					<el-form-item>
-						<el-date-picker
-							v-model="form.back.date"
-							type="date"
-							placeholder="出发日期"
-						/>
-					</el-form-item>
-					<el-form-item>
-						<el-time-picker
-							v-model="form.back.time"
-							placeholder="出发时间"
-						/>
-					</el-form-item>
-					<el-form-item>
-						<el-select v-model="form.back.operator">
-							<el-option
-								label="福州小丁[0]"
-								value="1"
-							/>
-							<el-option
-								label="福州小丁[1]"
-								value="2"
-							/>
-							<el-option
-								label="福州小丁[2]"
-								value="3"
-							/>
-						</el-select>
-					</el-form-item>
-				</el-form>
-			</div>
-		</div>
-
-		<div class="pt-4">
-			<h2 class="text-center">
-				客户信息
-			</h2>
-			<div class="grid cols-6 gap-8 ">
-				<el-card
-					v-for="(member, i) in currentGroup.members"
-					:key="i"
+		<h1 class="text-center">
+			服务信息
+		</h1>
+		<el-form
+			inline
+			label-position="top"
+			class
+		>
+			<el-form-item label="服务范围">
+				<el-select
+					v-model="form.service.region"
+					style="width: 200px;"
 				>
-					<template #header>
-						<div class="flex justify-between items-center">
-							<span>{{ member.name }}</span>
-							<el-popconfirm
-								title="确认删除?"
-								@confirm="handleDeleteMember(i)"
+					<el-option
+						label="国内导服"
+						value="1"
+					/>
+					<el-option
+						label="国外导服"
+						value="2"
+					/>
+					<el-option
+						label="跨国导服"
+						value="3"
+					/>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="服务类型">
+				<el-select
+					v-model="form.service.type"
+					style="width: 200px;"
+				>
+					<el-option
+						label="送团接团"
+						value="1"
+					/>
+					<el-option
+						label="送团"
+						value="2"
+					/>
+					<el-option
+						label="接团"
+						value="3"
+					/>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="旅游天数">
+				<el-input-number
+					v-model="form.travelDays"
+					:min="1"
+					:step="1"
+				/>
+			</el-form-item>
+			<el-form-item label="游客人数">
+				<el-input-number
+					v-model="form.numberOfGuests"
+					:min="1"
+					:step="1"
+				/>
+			</el-form-item>
+		</el-form>
+		<el-form
+			v-if="form.service.type == '1' || form.service.type == '2'"
+			inline
+			label-position="top"
+		>
+			<el-form-item label="出发机场">
+				<el-select
+					v-model="form.go.airport"
+					style="width: 200px;"
+				>
+					<el-option
+						label="[福州]福州长乐国际机场"
+						value="1"
+					/>
+					<el-option
+						label="[福州]福州机场"
+						value="2"
+					/>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="航班/车次">
+				<el-input
+					v-model="form.go.flight"
+					placeholder="航班/车次"
+				/>
+			</el-form-item>
+			<el-form-item label="出发日期">
+				<el-date-picker
+					v-model="form.go.date"
+					type="date"
+					placeholder="出发日期"
+				/>
+			</el-form-item>
+			<el-form-item label="出发时间">
+				<el-time-picker
+					v-model="form.go.time"
+					placeholder="出发时间"
+				/>
+			</el-form-item>
+			<el-form-item label="送机人员">
+				<el-select
+					v-model="form.go.operator"
+					style="width: 200px;"
+					placeholder="送机人员"
+				>
+					<el-option
+						label="福州小丁[0]"
+						value="1"
+					/>
+					<el-option
+						label="福州小丁[1]"
+						value="2"
+					/>
+					<el-option
+						label="福州小丁[2]"
+						value="3"
+					/>
+				</el-select>
+			</el-form-item>
+		</el-form>
+		<el-form
+			v-if="form.service.type == '1' || form.service.type == '3'"
+			:inline="true"
+			label-position="top"
+		>
+			<el-form-item label="回程机场">
+				<el-select
+					v-model="form.back.airport"
+					style="width: 200px;"
+				>
+					<el-option
+						label="[福州]福州长乐国际机场"
+						value="1"
+					/>
+					<el-option
+						label="[福州]福州机场"
+						value="2"
+					/>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="回程航班">
+				<el-input
+					v-model="form.back.flight"
+					placeholder="航班/车次"
+				/>
+			</el-form-item>
+			<el-form-item label="回程日期">
+				<el-date-picker
+					v-model="form.back.date"
+					type="date"
+					placeholder="回程日期"
+				/>
+			</el-form-item>
+			<el-form-item label="回程时间">
+				<el-time-picker
+					v-model="form.back.time"
+					placeholder="回程时间"
+				/>
+			</el-form-item>
+			<el-form-item label="接机人员">
+				<el-select
+					v-model="form.back.operator"
+					style="width: 200px;"
+					placeholder="接机人员"
+				>
+					<el-option
+						label="福州小丁[0]"
+						value="1"
+					/>
+					<el-option
+						label="福州小丁[1]"
+						value="2"
+					/>
+					<el-option
+						label="福州小丁[2]"
+						value="3"
+					/>
+				</el-select>
+			</el-form-item>
+		</el-form>
+
+		<h1 class="text-center mt-24">
+			客户信息
+		</h1>
+		<div class="flex justify-center items-center">
+			<el-button
+				size="large"
+				@click="state.addCustomer.visible = true"
+			>
+				添加客户
+			</el-button>
+		</div>
+		<el-scrollbar>
+			<div class="flex">
+				<transition-group name="slide-fade">
+					<el-card
+						v-for="(member, i) in currentGroup.members"
+						:key="i"
+						shadow="hover"
+						class="shrink-0 min-w-[367px] max-w-[400px] m-4"
+					>
+						<template #header>
+							<div class="flex justify-between items-center">
+								<div>
+									<span
+										v-if="member.appended"
+										class="i-mdi:star mx-2"
+									/>
+									<span>{{ member.name }}</span>
+								</div>
+								<el-popconfirm
+									title="确认删除?"
+									@confirm="handleDeleteMember(i)"
+								>
+									<template #reference>
+										<span class="i-mdi:close cursor-pointer hover:color-[--el-color-primary]" />
+									</template>
+								</el-popconfirm>
+							</div>
+						</template>
+						<div class="flex justify-between py-2">
+							<span>年龄</span>
+							{{ member.age }}
+						</div>
+						<div class="flex justify-between py-2">
+							<span>性别</span>
+							{{ member.gender }}
+						</div>
+						<div class="flex justify-between py-2">
+							<span>出生年月</span>
+							{{ member.birthday }}
+						</div>
+						<div class="flex justify-between py-2">
+							<span>联系方式</span>
+							{{ member.contact }}
+						</div>
+						<div class="flex justify-between py-2">
+							<span>证件号码</span>
+							{{ member.identity }}
+						</div>
+						<div class="flex justify-between py-2">
+							<span>出发航班</span>
+							{{ member.departingFlight }}
+						</div>
+						<div class="flex justify-between py-2">
+							<span>到达航班</span>
+							{{ member.arrivalFlight }}
+						</div>
+						<div class="flex justify-between py-2">
+							<span>下单日期</span>
+							{{ member.orderDate }}
+						</div>
+						<template #footer>
+							<div
+								class="text-ellipsis overflow-hidden text-nowrap cursor-pointer"
+								@click="toggleRemarkDetail(member.name, member.remark)"
 							>
-								<template #reference>
-									<span class="i-mdi:close cursor-pointer hover:color-[--el-color-primary]" />
-								</template>
-							</el-popconfirm>
-						</div>
-					</template>
-					<div class="flex justify-between py-2">
-						<span>年龄</span>
-						{{ member.age }}
-					</div>
-					<div class="flex justify-between py-2">
-						<span>性别</span>
-						{{ member.gender }}
-					</div>
-					<div class="flex justify-between py-2">
-						<span>出生年月</span>
-						{{ member.birthday }}
-					</div>
-					<div class="flex justify-between py-2">
-						<span>联系方式</span>
-						{{ member.contact }}
-					</div>
-					<div class="flex justify-between py-2">
-						<span>证件号码</span>
-						{{ member.identity }}
-					</div>
-					<div class="flex justify-between py-2">
-						<span>出发航班</span>
-						{{ member.departingFlight }}
-					</div>
-					<div class="flex justify-between py-2">
-						<span>到达航班</span>
-						{{ member.arrivalFlight }}
-					</div>
-					<div class="flex justify-between py-2">
-						<span>下单日期</span>
-						{{ member.orderDate }}
-					</div>
-					<template #footer>
-						<div
-							class="text-ellipsis overflow-hidden text-nowrap cursor-pointer"
-							@click="toggleRemarkDetail(member.name, member.remark)"
-						>
-							{{ member.remark }}
-						</div>
-					</template>
-				</el-card>
+								{{ member.remark }}
+							</div>
+						</template>
+					</el-card>
+				</transition-group>
 			</div>
-		</div>
+		</el-scrollbar>
 
-		<div class="pt-4">
-			<h2 class="text-center">
-				附加信息
-			</h2>
+		<h1 class="text-center mt-24">
+			附加信息
+		</h1>
+		<el-form
+			class="pb-70px"
+			label-position="top"
+			inline
+		>
+			<el-form-item
+				label="内部备注"
+				class="flex-1"
+			>
+				<el-input
+					v-model="form.remarks.internal"
 
-			<div class="grid cols-3 gap-4">
-				<div>
-					<div class="mb-4">
-						内部备注
-					</div>
-					<el-input
-						:rows="10"
-						type="textarea"
-					/>
-				</div>
+					:rows="10"
+					type="textarea"
+				/>
+			</el-form-item>
+			<el-form-item
+				label="客户备注"
+				class="flex-1"
+			>
+				<el-input
+					v-model="form.remarks.customer"
 
-				<div>
-					<div class="mb-4">
-						客户备注
-					</div>
-					<el-input
-						:rows="10"
-						type="textarea"
-					/>
-				</div>
+					:rows="10"
+					type="textarea"
+				/>
+			</el-form-item>
+			<el-form-item
+				label="确认说明"
+				class="flex-1"
+			>
+				<el-input
+					v-model="form.remarks.confirm"
 
-				<div>
-					<div class="mb-4">
-						确认说明
-					</div>
-					<el-input
-						:rows="10"
-						type="textarea"
-					/>
-				</div>
-			</div>
-		</div>
+					:rows="10"
+					type="textarea"
+				/>
+			</el-form-item>
+		</el-form>
 
 		<el-drawer
-			v-model="state.dialog.visible"
+			v-model="state.orderList.visible"
 			:show-close="false"
 		>
 			<template #header>
@@ -332,6 +371,28 @@
 				</div>
 			</el-card>
 		</el-drawer>
+		<el-dialog v-model="state.addCustomer.visible">
+			<template #header>
+				添加客户
+			</template>
+			<el-form label-position="top">
+				<el-form-item label="客户姓名">
+					<el-input />
+				</el-form-item>
+				<el-form-item label="客户年龄">
+					<el-input />
+				</el-form-item>
+				<el-form-item label="出生年月">
+					<el-input />
+				</el-form-item>
+				.... 等其他信息
+			</el-form>
+			<template #footer>
+				<el-button @click="handleAddCustomer">
+					确认添加
+				</el-button>
+			</template>
+		</el-dialog>
 	</div>
 </template>
 
@@ -341,11 +402,20 @@ import { sheetStore } from '~/store'
 const useSheetStore = sheetStore()
 
 const state = reactive({
-	dialog: {
+	addCustomer: {
 		visible: false
 	},
-	index: 0
+	orderList: {
+		visible: false
+	},
+	index: 0,
+	tooltip: {
+		visible: false
+	}
+
 })
+
+const ref1 = ref()
 
 const form = reactive({
 	service: {
@@ -370,8 +440,12 @@ const form = reactive({
 		date: '',
 		time: '',
 		operator: ''
+	},
+	remarks: {
+		internal: '',
+		customer: '',
+		confirm: ''
 	}
-
 })
 
 const currentGroup = computed(() => useSheetStore.groups[state.index])
@@ -383,7 +457,7 @@ const toggleRemarkDetail = (name?: string | null, remark?: string | null) => {
 }
 
 const toggleDrawer = () => {
-	state.dialog.visible = !state.dialog.visible
+	state.orderList.visible = !state.orderList.visible
 }
 
 const handleDeleteMember = (e: number) => {
@@ -432,18 +506,58 @@ const handleConfirm = () => {
 
 const handleMemberCardClick = (e: number) => {
 	state.index = e
-	state.dialog.visible = false
+	state.orderList.visible = false
+}
+
+const handleAddCustomer = () => {
+	const customer = {
+		name: `新客户${Date.now()}`,
+		gender: '男',
+		age: '23',
+		birthday: '2024/11/16',
+		contact: '13067265227',
+		identity: '362330200105168426',
+		departingFlight: 'S2C232',
+		arrivalFlight: 'GR21232',
+		orderDate: Date.now().toLocaleString(),
+		remark: '客户有心脏病',
+		appended: true
+	}
+	useSheetStore.groups[state.index].members.unshift(customer)
+	state.addCustomer.visible = false
 }
 
 onMounted(() => {
 	if (useSheetStore.groups.length == 0) {
 		navigateTo('/')
 	}
+	else {
+		const totoal = useSheetStore.groups.length
+		const errors = useSheetStore.groups.filter(group => group.hasProblem).length
+		ElMessageBox.alert(`系统已为您生成${totoal + 1}个待处理订单，其中信息异常的订单有${errors}个`, '提示', {
+			confirmButtonText: 'OK'
+		}).then(() => {
+			state.tooltip.visible = true
+			setTimeout(() => {
+				state.tooltip.visible = false
+			}, 3000)
+		})
+	}
 })
 </script>
 
-<style lang='scss'>
-.el-drawer__header {
-	display: none;
+<style scoped lang="scss">
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
 }
 </style>

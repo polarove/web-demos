@@ -9,6 +9,7 @@ export interface IMember {
 	contact?: string | null
 	orderDate?: string | null
 	remark?: string | null
+	appended?: boolean
 }
 
 export interface IGroup {
