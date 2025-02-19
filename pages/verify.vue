@@ -177,17 +177,17 @@
 					placeholder="航班/车次"
 				/>
 			</el-form-item>
-			<el-form-item label="回程日期">
+			<el-form-item label="到达日期">
 				<el-date-picker
 					v-model="form.back.date"
 					type="date"
-					placeholder="回程日期"
+					placeholder="到达日期"
 				/>
 			</el-form-item>
-			<el-form-item label="回程时间">
+			<el-form-item label="到达时间">
 				<el-time-picker
 					v-model="form.back.time"
-					placeholder="回程时间"
+					placeholder="到达时间"
 				/>
 			</el-form-item>
 			<el-form-item label="接机人员">
