@@ -21,7 +21,7 @@ export default defineNuxtConfig({
 			cors: true,
 			proxy: {
 				'/admin': {
-					target: 'https://localhost:44341',
+					target: 'http://localhost:44341',
 					changeOrigin: true,
 					rewrite: path => path.replace(/^\/admin/, '/api/admin'),
 					secure: false

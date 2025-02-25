@@ -1,6 +1,23 @@
 <template>
 	<div class="p12 position-relative">
 		<div class="position-fixed bottom-0 w-100% h-67px bg-[--el-bg-color-overlay] flex justify-center items-center z-[999]">
+			<el-select
+				v-model="state.order"
+				style="width: 200px;"
+				placeholder="订单"
+			>
+				<el-option
+					label="分销商提交的订单"
+					:value="1"
+				/>
+				<el-option
+					label="代理商自建订单"
+					:value="2"
+				/>
+			</el-select>
+			<div>
+				当前身份：{{ state.identity }}
+			</div>
 			<el-button
 				size="large"
 				:disabled="currentGroup.submitted || currentGroup.hasProblem"
@@ -432,6 +449,8 @@ import type { IMember } from '~/types/member'
 const useSheetStore = sheetStore()
 
 const state = reactive({
+	order: 1,
+	identity: '分销商用户',
 	addCustomer: {
 		visible: false
 	},
