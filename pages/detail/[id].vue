@@ -9,7 +9,7 @@
 			:inline="true"
 			class="justify-center"
 		>
-			<el-form-item label="天数价格公式">
+			<el-form-item label="基本价格公式">
 				<el-input
 					v-model="formularForm.price"
 					@input="handleFormularChange(formularForm.price)"
