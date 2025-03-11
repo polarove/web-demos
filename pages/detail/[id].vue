@@ -36,7 +36,7 @@
 		</el-form>
 		<p class="text-center ">
 			<el-text type="info">
-				<span class="i-mdi:information" />n 为天数
+				<span class="i-mdi:information" />&nbsp;n 为天数
 			</el-text>
 		</p>
 		<el-auto-resizer style="height: 800px; padding: 0px 40px;">
@@ -100,7 +100,7 @@ const columns = reactive<AnyColumn[]>([
 	{
 		key: 'price',
 		dataKey: 'price',
-		title: '价格',
+		title: '基础价格',
 		width: 100
 	},
 	{
