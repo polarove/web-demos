@@ -1,5 +1,3 @@
 <template>
-	<div>
-		<el-button>asd</el-button>
-	</div>
+	<nuxt-page />
 </template>
