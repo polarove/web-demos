@@ -9,7 +9,12 @@
 			:inline="true"
 			class="justify-center"
 		>
-			<el-form-item label="基本价格公式">
+			<el-form-item label="操作">
+				<el-button @click="syncPrices()">
+					同步价格
+				</el-button>
+			</el-form-item>
+			<el-form-item label="成本价格公式">
 				<el-input
 					v-model="formularForm.price"
 					@input="handleFormularChange(formularForm.price)"
@@ -72,7 +77,7 @@
 	</div>
 </template>
 
-<script lang='ts' setup>
+<script lang='tsx' setup>
 import type { AnyColumn } from 'element-plus/es/components/table-v2/src/common.mjs'
 import type { IDistributorTrafficSeriesPrice } from '~/types'
 
@@ -95,31 +100,81 @@ const columns = reactive<AnyColumn[]>([
 		key: 'day',
 		dataKey: 'day',
 		title: '天数',
-		width: 100
+		width: 100,
+		cellRenderer: ({
+			cellData
+		}) => {
+			return (
+				<el-text>
+					￥
+					{cellData}
+				</el-text>
+			)
+		}
 	},
 	{
 		key: 'price',
 		dataKey: 'price',
-		title: '基础价格',
-		width: 100
+		title: '成本价格',
+		width: 100,
+		cellRenderer: ({
+			cellData
+		}) => {
+			return (
+				<el-text>
+					￥
+					{cellData}
+				</el-text>
+			)
+		}
 	},
 	{
 		key: 'price1',
 		dataKey: 'price1',
 		title: '分销等级1价格',
-		width: 200
+		width: 200,
+		cellRenderer: ({
+			cellData
+		}) => {
+			return (
+				<el-text>
+					￥
+					{cellData}
+				</el-text>
+			)
+		}
 	},
 	{
 		key: 'price2',
 		dataKey: 'price2',
 		title: '分销等级2价格',
-		width: 200
+		width: 200,
+		cellRenderer: ({
+			cellData
+		}) => {
+			return (
+				<el-text>
+					￥
+					{cellData}
+				</el-text>
+			)
+		}
 	},
 	{
 		key: 'price3',
 		dataKey: 'price3',
 		title: '分销等级3价格',
-		width: 200
+		width: 200,
+		cellRenderer: ({
+			cellData
+		}) => {
+			return (
+				<el-text>
+					￥
+					{cellData}
+				</el-text>
+			)
+		}
 	}
 ])
 
@@ -133,8 +188,73 @@ const reset = () => {
 	}).catch(() => {})
 }
 
+const syncPrices = () => {
+	if (columns.find(item => item.key === 'sync')) {
+		columns.splice(2, 1)
+	}
+	columns.splice(2, 0, {
+		key: 'sync',
+		dataKey: 'sync',
+		title: '同步后的成本价',
+		width: 200,
+		cellRenderer: ({
+			cellData,
+			rowIndex
+		}) => {
+			if (cellData > prices[rowIndex].price) {
+				return (
+					<div>
+						<el-text>
+							￥
+							{cellData}
+						</el-text>
+						<div>
+							<el-text type="primary">
+								￥
+								{cellData - prices[rowIndex].price}
+							</el-text>
+							<el-text type="info">&nbsp;(上升)</el-text>
+						</div>
+					</div>
+				)
+			}
+			else if (cellData < prices[rowIndex].price) {
+				return (
+					<div>
+						<el-text>
+							￥
+							{cellData}
+						</el-text>
+						<div>
+							<el-text type="danger">
+								-￥
+								{Math.abs(cellData - prices[rowIndex].price)}
+							</el-text>
+							<el-text type="info">&nbsp;(下降)</el-text>
+						</div>
+					</div>
+				)
+			}
+			else {
+				return (
+					<el-text>
+						￥
+						{cellData}
+					</el-text>
+				)
+			}
+		}
+	})
+	initTable(true)
+}
+
 const save = () => {
-	sessionStorage.setItem(id.toString(), JSON.stringify(trafficPackage.value))
+	ElMessageBox.confirm('是否保存?')
+		.then(() => {
+			const dayone = prices.find(item => item.day === 1)
+			sessionStorage.setItem(dayone!.day.toString(), JSON.stringify(dayone))
+		})
+		.catch(() => {})
 }
 
 const back = () => {
@@ -152,18 +272,23 @@ const handleFormularChange = (formular: string) => {
 interface IPriceTable {
 	day: number
 	price: number
+	sync?: number
 	price1: number
 	price2: number
 	price3: number
 }
 
-const initTable = () => {
+const initTable = (flag?: boolean) => {
 	prices.splice(0, prices.length)
 	const seriesDays = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 45, 60, 91]
-	for (const day of seriesDays) {
+
+	for (let i = 0; i < seriesDays.length; i++) {
+		const d = Math.random() > 0.5 ? '2' : '-2'
+		const day = seriesDays[i]
 		prices.push({
 			day,
 			price: calculate(formularForm.price, day.toString()),
+			sync: flag ? i % 2 == 0 ? calculate(formularForm.price, day.toString()) : calculate(formularForm.price + d, day.toString())! : null,
 			price1: calculate(formularForm.price1, day.toString()),
 			price2: calculate(formularForm.price2, day.toString()),
 			price3: calculate(formularForm.price3, day.toString())
